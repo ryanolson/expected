@@ -1966,12 +1966,12 @@ private:
 
   void swap_where_only_one_has_value_and_t_is_not_void(
       expected &rhs, move_constructing_t_can_throw,
-      t_is_nothrow_move_constructible) {
+      e_is_nothrow_move_constructible) {
     auto temp = std::move(rhs.err());
     rhs.err().~unexpected_type();
 #ifdef TL_EXPECTED_EXCEPTIONS_ENABLED
     try {
-      ::new (rhs.valptr()) T(val());
+      ::new (rhs.valptr()) T(std::move(val()));
       val().~T();
       ::new (errptr()) unexpected_type(std::move(temp));
       std::swap(this->m_has_val, rhs.m_has_val);
@@ -1980,7 +1980,7 @@ private:
       throw;
     }
 #else
-    ::new (rhs.valptr()) T(val());
+    ::new (rhs.valptr()) T(std::move(val()));
     val().~T();
     ::new (errptr()) unexpected_type(std::move(temp));
     std::swap(this->m_has_val, rhs.m_has_val);
